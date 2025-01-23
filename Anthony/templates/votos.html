@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Resultados da Votação</title>
+</head>
+<body>
+<h1>Resultados da Votação</h1>
+<table border="1">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Produto</th>
+            <th>Cor</th>
+            <th>Tamanho</th>
+            <th>Telefone</th>
+            <th>Voto</th>
+            <th>Comentário</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for voto in votos %}
+        <tr>
+            <td>{{ voto[0] }}</td>
+            <td>{{ voto[1] }}</td>
+            <td>{{ voto[2] }}</td>
+            <td>{{ voto[3] }}</td>
+            <td>{{ voto[4] }}</td>
+            <td>{{ voto[5] }}</td>
+            <td>{{ voto[6] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<a href="{{ url_for('index') }}">Voltar</a>
+</body>
+</html>

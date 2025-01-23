@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Produtos</title>
+</head>
+<body>
+    <h1>Lista de Produtos</h1>
+    <ul>
+        {% for produto in produtos %}
+        <li>
+            {{ produto[1] }} - Cor: {{ produto[3] }} - Tamanho: {{ produto[4] }}
+            <a href="/enviar_votacao/{{ produto[0] }}">Enviar Votação</a>
+        </li>
+        {% endfor %}
+    </ul>
+    <a href="/cadastro">Cadastrar Novo Produto</a>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Dados Liberados para Entrega</title>
+    <style>
+        /* Aqui você coloca seu CSS */
+        body {
+            background-image: url('image_1308.jpg');
+            color: white;
+            font-size: 16px;
+        }
+        /* Mais estilos */
+    </style>
+</head>
+<body>
+    <div id="data-container">
+        <!-- Os dados serão inseridos aqui -->
+    </div>
+    
+    <script>
+        function fetchData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    const container = document.getElementById('data-container');
+                    container.innerHTML = ''; // Limpa os dados antigos
+                    data.forEach(row => {
+                        // Adicione aqui a forma como os dados devem ser apresentados
+                        container.innerHTML += `<p>${row}</p>`;
+                    });
+                });
+        }
+        
+        // Chamar fetchData() a cada 5 segundos
+        setInterval(fetchData, 5000);
+        
+        // Chamar imediatamente ao carregar a página
+        fetchData();
+    </script>
+</body>
+</html>

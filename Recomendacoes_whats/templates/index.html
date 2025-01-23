@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recomendações de Produtos</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Recomendações de Produtos</h1>
+        <div class="filter-section">
+            <input type="text" id="codigo-cliente" placeholder="Código do Cliente">
+            <input type="text" id="nome-cliente" placeholder="Nome do Cliente">
+            <input type="text" id="cnpj-cliente" placeholder="CNPJ do Cliente">
+            <button onclick="filtrarCliente()">Filtrar</button>
+        </div>
+        <div id="product-list" class="product-list"></div>
+        <textarea id="observacao" placeholder="Digite sua mensagem aqui..."></textarea>
+        <button onclick="enviarMensagem()">Enviar Mensagem</button>
+    </div>
+    <script src="/static/js/script.js"></script>
+</body>
+</html>

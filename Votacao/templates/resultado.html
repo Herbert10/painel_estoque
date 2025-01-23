@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados da Votação</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Resultados da Votação</h1>
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul class="flash-messages">
+                    {% for message in messages %}
+                        <li>{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+        {% if avaliacoes %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>Código do Produto</th>
+                        <th>Descrição</th>
+                        <th>Cor</th>
+                        <th>Tamanho</th>
+                        <th>Nota</th>
+                        <th>Observação</th>
+                        <th>Nome do Usuário</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for avaliacao in avaliacoes %}
+                    <tr>
+                        <td>{{ avaliacao[0] }}</td>
+                        <td>{{ avaliacao[1] }}</td>
+                        <td>{{ avaliacao[2] }}</td>
+                        <td>{{ avaliacao[3] }}</td>
+                        <td>{{ avaliacao[4] }}</td>
+                        <td>{{ avaliacao[5] }}</td>
+                        <td>{{ avaliacao[6] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>Nenhum resultado encontrado.</p>
+        {% endif %}
+        <a href="{{ url_for('index') }}">Voltar para a Página Inicial</a>
+    </div>
+</body>
+</html>

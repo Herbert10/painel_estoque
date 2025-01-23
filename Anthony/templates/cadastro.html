@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Produtos</title>
+</head>
+<body>
+<h1>Cadastro de Produtos</h1>
+<form action="{{ url_for('cadastro') }}" method="post" enctype="multipart/form-data">
+    <label for="descricao">Descrição:</label>
+    <input type="text" name="descricao" required><br>
+    
+    <label for="cor">Cor:</label>
+    <input type="text" name="cor" required><br>
+    
+    <label for="tamanho">Tamanho:</label>
+    <input type="text" name="tamanho" required><br>
+    
+    <label for="imagem">Imagem:</label>
+    <input type="file" name="imagem" accept="image/*" required><br>
+
+    <!-- Adicione campos adicionais se necessário -->
+    <button type="submit">Cadastrar</button>
+</form>
+
+<a href="{{ url_for('produtos') }}">Ver Produtos</a>
+</body>
+</html>

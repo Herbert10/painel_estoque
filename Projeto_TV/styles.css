@@ -1,0 +1,78 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #121212;
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.header {
+    background-color: #333;
+    padding: 10px;
+    text-align: center;
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    border-bottom: 3px solid #444;
+}
+
+.main {
+    display: flex;
+    flex: 1;
+    background-color: #282828;
+}
+
+.left {
+    flex: 2;
+    padding: 20px;
+    border-right: 3px solid #444;
+}
+
+.right {
+    flex: 1;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.footer {
+    padding: 10px;
+    background-color: #333;
+    overflow-y: auto;
+    border-top: 3px solid #444;
+}
+
+.carousel {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    justify-content: space-around;
+    align-items: center;
+    gap: 10px;
+}
+
+.carousel img {
+    width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Ajusta a imagem para caber sem cortar */
+    border-radius: 8px;
+    transition: transform 0.5s ease;
+}
+
+.carousel img:hover {
+    transform: scale(1.05);
+}
+
+video {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}

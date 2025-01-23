@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Votação de Produtos</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="/static/js/scripts.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h2>Votação de Produtos</h2>
+        <!-- Exibir mensagens de flash -->
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for message in messages %}
+                        <div class="alert alert-info">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        {% if produtos %}
+            <form method="POST" action="/seller" class="rating-form">
+                <input type="text" name="nome_usuario" placeholder="Digite seu nome" required>
+                {% for produto in produtos %}
+                    <div class="card">
+                        <h3>{{ produto.descricao }}</h3>
+                        <div class="imagens">
+                            {% if produto.imagens %}
+                                {% for imagem in produto.imagens %}
+                                    <img src="{{ imagem }}" alt="Imagem do Produto" style="max-width: 150px; margin: 5px;">
+                                {% endfor %}
+                            {% else %}
+                                <p>Sem imagens disponíveis.</p>
+                            {% endif %}
+                        </div>
+                        <div class="detalhes">
+                            <h4>Opções de Votação:</h4>
+                            <input type="hidden" name="produto_id" value="{{ produto.cod_produto }}">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Cor</th>
+                                        <th style="text-align: center;">Tamanho</th>
+                                        <th>Nota</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for cor, tamanho in produto.opcoes %}
+                                    <tr>
+                                        <td>{{ cor }}</td>
+                                        <td style="text-align: center;">{{ tamanho }}</td>
+                                        <td>
+                                            <div class="star-rating">
+                                                <input type="radio" name="nota_{{ produto.cod_produto }}_{{ cor }}_{{ tamanho }}" value="5" id="5-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">
+                                                <label for="5-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">★</label>
+                                                <input type="radio" name="nota_{{ produto.cod_produto }}_{{ cor }}_{{ tamanho }}" value="4" id="4-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">
+                                                <label for="4-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">★</label>
+                                                <input type="radio" name="nota_{{ produto.cod_produto }}_{{ cor }}_{{ tamanho }}" value="3" id="3-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">
+                                                <label for="3-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">★</label>
+                                                <input type="radio" name="nota_{{ produto.cod_produto }}_{{ cor }}_{{ tamanho }}" value="2" id="2-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">
+                                                <label for="2-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">★</label>
+                                                <input type="radio" name="nota_{{ produto.cod_produto }}_{{ cor }}_{{ tamanho }}" value="1" id="1-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">
+                                                <label for="1-{{ produto.cod_produto }}-{{ cor }}-{{ tamanho }}">★</label>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                            <div class="observacao">
+                                <h4>Observação:</h4>
+                                <textarea name="observacao_produto" placeholder="Deixe uma observação para o produto"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+                <button type="submit">Finalizar Votação</button>
+            </form>
+        {% else %}
+            <p>Nenhum produto disponível para votação.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

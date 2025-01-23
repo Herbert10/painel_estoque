@@ -1,0 +1,50 @@
+<div class="container">
+    {% for produto_id in produtos %}
+        <h2>Produto: {{ produto_id }}</h2>
+        {% if imagens_produtos[produto_id] %}
+            <div class="produto-imagens">
+                {% for imagem in imagens_produtos[produto_id] %}
+                    <img src="{{ url_for('static', filename=imagem.split('static/')[1]) }}" alt="Imagem do Produto" width="150">
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>Sem imagens disponíveis para este produto.</p>
+        {% endif %}
+        <form method="POST">
+            <input type="text" name="nome" placeholder="Seu Nome" required><br>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Cor</th>
+                        <th>Tamanho</th>
+                        <th>Voto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for produto in produtos %}
+                    <tr>
+                        <td>{{ produto['COR'] }}</td>
+                        <td>{{ produto['TAMANHO'] }}</td>
+                        <td>
+                            <div class="rating">
+                                <input type="radio" name="nota" value="5" id="5-{{ produto_id }}" required>
+                                <label for="5-{{ produto_id }}">★</label>
+                                <input type="radio" name="nota" value="4" id="4-{{ produto_id }}" required>
+                                <label for="4-{{ produto_id }}">★</label>
+                                <input type="radio" name="nota" value="3" id="3-{{ produto_id }}" required>
+                                <label for="3-{{ produto_id }}">★</label>
+                                <input type="radio" name="nota" value="2" id="2-{{ produto_id }}" required>
+                                <label for="2-{{ produto_id }}">★</label>
+                                <input type="radio" name="nota" value="1" id="1-{{ produto_id }}" required>
+                                <label for="1-{{ produto_id }}">★</label>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <textarea name="observacao" placeholder="Observação"></textarea><br>
+            <button type="submit">Votar</button>
+        </form>
+    {% endfor %}
+</div>

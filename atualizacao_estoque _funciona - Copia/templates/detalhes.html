@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalhes do Produto</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center mb-4">Detalhes do Produto</h1>
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2 class="card-title">Informações do Produto</h2>
+                <p><strong>Código do Produto:</strong> {{ produto['COD_PRODUTO'] }}</p>
+                <p><strong>Descrição:</strong> {{ produto['DESCRICAO'] }}</p>
+                <p><strong>Cor:</strong> {{ produto['COR'] }}</p>
+                <p><strong>Tamanho:</strong> {{ produto['TAMANHO'] }}</p>
+                <p><strong>Foto:</strong> <img src="{{ produto['FOTO'] }}" alt="Foto do Produto" width="50"></p>
+                <button id="verRomaneios" class="btn btn-success">Ver Romaneios</button>
+            </div>
+        </div>
+        <div id="romaneiosModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeRomaneios">&times;</span>
+                <h2>Romaneios</h2>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>ROMANEIO</th>
+                            <th>DATA</th>
+                        </tr>
+                    </thead>
+                    <tbody id="romaneiosBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('verRomaneios').onclick = function() {
+            const codProduto = '{{ produto['COD_PRODUTO'] }}';
+            const codCliente = '{{ cod_cliente }}';
+            const dataInicial = '{{ data_inicial }}';
+            const dataFinal = '{{ data_final }}';
+
+            fetch('/detalhes_produto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `cod_cliente=${codCliente}&data_inicial=${dataInicial}&data_final=${dataFinal}&cod_produto=${codProduto}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.getElementById('romaneiosBody');
+                tbody.innerHTML = '';
+                data.forEach(romaneio => {
+                    const row = `<tr><td>${romaneio.romaneio}</td><td>${romaneio.data}</td></tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+                document.getElementById('romaneiosModal').style.display = 'block';
+            });
+        };
+
+        document.getElementById('closeRomaneios').onclick = function() {
+            document.getElementById('romaneiosModal').style.display = 'none';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buscar Dados</title>
+</head>
+<body>
+    <h1>Buscar Dados do Banco de Dados</h1>
+    <form method="post" action="/">
+        <label for="cod_cliente">Código do Cliente:</label>
+        <input type="text" id="cod_cliente" name="cod_cliente" required><br>
+
+        <label for="data_inicial">Data Inicial:</label>
+        <input type="date" id="data_inicial" name="data_inicial" required><br>
+
+        <label for="data_final">Data Final:</label>
+        <input type="date" id="data_final" name="data_final" required><br>
+
+        <button type="submit">Buscar</button>
+    </form>
+</body>
+</html>

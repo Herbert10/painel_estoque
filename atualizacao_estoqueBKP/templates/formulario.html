@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Estoque</title>
+    <style>
+        .dataframe {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .dataframe th, .dataframe td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        .dataframe img {
+            width: 100px; /* Ajuste o tamanho conforme necessário */
+            height: auto;
+        }
+    </style>
+    <script>
+        function salvarParcialmente() {
+            const form = document.getElementById('formEstoque');
+            const formData = new FormData(form);
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "{{ url_for('salvar_parcial', filename=filename) }}", true);
+            xhr.send(formData);
+        }
+
+        setInterval(salvarParcialmente, 5000);  // Salvar a cada 5 segundos
+    </script>
+</head>
+<body>
+    <h1>Formulário de Estoque</h1>
+    <form id="formEstoque" method="POST" action="{{ url_for('salvar', filename=filename) }}">
+        <table class="dataframe">
+            <thead>
+                <tr>
+                    {% for title in titles %}
+                        <th>{{ title }}</th>
+                    {% endfor %}
+                    <th>Estoque Atual</th>
+                    <th>Reposição</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for index, row in df.iterrows() %}
+                    <tr>
+                        {% for title in titles %}
+                            {% if title == 'FOTO' %}
+                                <td><img src="{{ row[title] }}" alt="Imagem do Produto"></td>
+                            {% else %}
+                                <td>{{ row[title] }}</td>
+                            {% endif %}
+                        {% endfor %}
+                        <td><input type="number" name="estoque_atual" value="{{ partial.get(index, {}).get('estoque_atual', '') }}"></td>
+                        <td><input type="number" name="reposicao" value="{{ partial.get(index, {}).get('reposicao', '') }}"></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Salvar</button>
+    </form>
+</body>
+</html>

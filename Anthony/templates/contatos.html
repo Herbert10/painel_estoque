@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Contatos</title>
+</head>
+<body>
+    <h1>Contatos Cadastrados</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Número de Telefone</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for contato in contatos %}
+            <tr>
+                <td>{{ contato[0] }}</td>
+                <td>{{ contato[1] }}</td>
+                <td>{{ contato[2] }}</td>
+                <td>
+                    <a href="/editar_contato/{{ contato[0] }}">Editar</a> |
+                    <a href="/excluir_contato/{{ contato[0] }}">Excluir</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <a href="/">Voltar para a Página Inicial</a>
+</body>
+</html>

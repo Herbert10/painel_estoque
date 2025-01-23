@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro de Produtos</title>
+</head>
+<body>
+    <h1>Cadastro de Produtos</h1>
+    <form method="POST" action="/cadastro" enctype="multipart/form-data">
+        <label for="descricao">Descrição do Produto:</label>
+        <input type="text" name="descricao" required><br><br>
+
+        <label>Adicionar Variações:</label><br>
+        <div id="variacoes">
+            <div>
+                <label>Cor:</label>
+                <input type="text" name="cor" required>
+                <label>Tamanho:</label>
+                <input type="text" name="tamanho" required>
+                <label>Imagem:</label>
+                <input type="file" name="imagem" accept="image/*" required>
+            </div>
+        </div>
+        <button type="button" onclick="addVariation()">Adicionar Mais Variações</button><br><br>
+
+        <button type="submit">Cadastrar Produto</button>
+    </form>
+
+    <a href="/">Voltar para a Página Inicial</a>
+
+    <script>
+        function addVariation() {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label>Cor:</label>
+                <input type="text" name="cor" required>
+                <label>Tamanho:</label>
+                <input type="text" name="tamanho" required>
+                <label>Imagem:</label>
+                <input type="file" name="imagem" accept="image/*" required>
+            `;
+            document.getElementById('variacoes').appendChild(div);
+        }
+    </script>
+</body>
+</html>

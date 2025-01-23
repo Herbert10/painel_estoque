@@ -1,0 +1,22 @@
+<form method="POST">
+    <h2>Selecione os Produtos para Votação</h2>
+    {% if produtos %}
+        {% for produto in produtos %}
+            <div>
+                <input type="checkbox" name="produtos" value="{{ produto['COD_PRODUTO'] }}">
+                <label>{{ produto['DESCRICAO'] }} (Código: {{ produto['COD_PRODUTO'] }})</label>
+            </div>
+            <div>
+                <label>Selecione as Imagens para {{ produto['DESCRICAO'] }}:</label>
+                <select name="imagem_{{ produto['COD_PRODUTO'] }}" multiple>
+                    {% for imagem in imagens_disponiveis %}
+                        <option value="{{ imagem }}">{{ imagem }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Nenhum produto encontrado.</p>
+    {% endif %}
+    <button type="submit">Salvar Seleção</button>
+</form>

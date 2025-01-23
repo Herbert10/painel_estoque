@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Votação de Produtos</title>
+    <script>
+        function enviarVoto(variacao_id) {
+            var voto = document.querySelector(`input[name="voto_${variacao_id}"]:checked`).value;
+            var comentario = document.querySelector(`#comentario_${variacao_id}`).value;
+
+            fetch('/votar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    'variacao_id': variacao_id,
+                    'voto': voto,
+                    'comentario': comentario
+                })
+            })
+            .then(response => response.text())
+            .then(data => alert(data))
+            .catch(error => console.error('Erro:', error));
+        }
+    </script>
+</head>
+<body>
+    <h2>Votação de Produtos</h2>
+    {% for produto in produtos %}
+    <div>
+        <h3>{{ produto.descricao }}</h3>
+        <img src="{{ produto.foto_url }}" alt="Foto do Produto" style="width: 200px; height: auto;">
+        <p>Cor: {{ produto.cor }}, Tamanho: {{ produto.tamanho }}</p>
+        
+        <label>Vote:</label>
+        <input type="radio" name="voto_{{ produto.variacao_id }}" value="1"> 1 ⭐
+        <input type="radio" name="voto_{{ produto.variacao_id }}" value="2"> 2 ⭐⭐
+        <input type="radio" name="voto_{{ produto.variacao_id }}" value="3"> 3 ⭐⭐⭐
+        <input type="radio" name="voto_{{ produto.variacao_id }}" value="4"> 4 ⭐⭐⭐⭐
+        <input type="radio" name="voto_{{ produto.variacao_id }}" value="5"> 5 ⭐⭐⭐⭐⭐
+        
+        <label for="comentario_{{ produto.variacao_id }}">Comentário:</label>
+        <textarea id="comentario_{{ produto.variacao_id }}" rows="4"></textarea>
+
+        <button onclick="enviarVoto({{ produto.variacao_id }})">Enviar Voto</button>
+    </div>
+    <hr>
+    {% endfor %}
+    <a href="/logout">Sair</a>
+</body>
+</html>

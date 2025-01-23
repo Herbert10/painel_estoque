@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/clientes.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Clientes</h1>
+
+        <div class="filtro">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" placeholder="Digite o código...">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite o nome...">
+            <label for="vendedor">Vendedor:</label>
+            <select id="vendedor">
+                <option value="">Selecione um vendedor</option>
+            </select>
+            <button id="buscar-clientes">Buscar</button>
+        </div>
+
+        <div class="spinner" style="display: none;">
+            <div class="lds-dual-ring"></div>
+        </div>
+
+        <table id="clientes-table">
+            <thead>
+                <tr>
+                    <th data-column="codigo">Código</th>
+                    <th data-column="nome">Nome</th>
+                    <th data-column="classificacao">Classificação</th>
+                    <th data-column="ultima_compra">Última Compra</th>
+                    <th data-column="qtd_produtos">Qtd Produtos</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tabela de Dados</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Tabela de Dados</h1>
+    <table>
+        <thead>
+            <tr>
+                {% for col in columns %}
+                    <th>{{ col }}</th>
+                {% endfor %}
+                <th>Estoque Atual</th>
+                <th>Reposição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <form method="post" action="/salvar">
+                {% for row in tabela %}
+                    <tr>
+                        {% for col in columns %}
+                            <td>{{ row[col] }}</td>
+                            <input type="hidden" name="{{ col }}" value="{{ row[col] }}">
+                        {% endfor %}
+                        <td><input type="text" name="ESTOQUE_ATUAL" value=""></td>
+                        <td><input type="text" name="REPOSICAO" value=""></td>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="{{ columns|length + 2 }}"><button type="submit">Salvar</button></td>
+                </tr>
+            </form>
+        </tbody>
+    </table>
+</body>
+</html>

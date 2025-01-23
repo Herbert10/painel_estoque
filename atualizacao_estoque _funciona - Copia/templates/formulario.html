@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulário de Estoque</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+        }
+        h1, h2 {
+            text-align: center;
+            color: #333;
+        }
+        h1 {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 20px;
+            border-bottom: 5px solid #388E3C;
+        }
+        h2 {
+            margin-top: 20px;
+        }
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100px;
+        }
+        button {
+            display: block;
+            margin: 20px auto;
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #4cae4c;
+        }
+        .header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+            border-bottom: 5px solid #388E3C;
+        }
+        .header p {
+            margin: 5px 0;
+        }
+        .client-info {
+            width: 90%;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+        .client-info p {
+            margin: 10px 0;
+            font-size: 16px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            padding-top: 100px;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Formulário de Estoque</h1>
+    </div>
+    <div class="client-info">
+        <h2>Informações do Cliente</h2>
+        <p><strong>Código do Cliente:</strong> {{ df['COD_CLIENTE'][0] }}</p>
+        <p><strong>Nome:</strong> {{ df['NOME'][0] }}</p>
+        <p><strong>Total de Vendas:</strong> {{ df['QUANTIDADE'].sum() }}</p>
+        <button id="verRomaneios">Ver Romaneios</button>
+    </div>
+    <form method="POST" action="{{ url_for('salvar', filename=filename) }}">
+        <table>
+            <thead>
+                <tr>
+                    <th>COD_PRODUTO</th>
+                    <th>DESCRICAO_PRODUTO</th>
+                    <th>COD_COR</th>
+                    <th>DESCRICAO_COR</th>
+                    <th>TAMANHO</th>
+                    <th>PTC</th>
+                    <th>QUANTIDADE</th>
+                    <th>PRECO</th>
+                    <th>FOTO</th>
+                    <th>ESTOQUE_ATUAL</th>
+                    <th>REPOSICAO</th>
+                    <th>DETALHES</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in df.itertuples() %}
+                <tr>
+                    <td><input type="hidden" name="cod_produto" value="{{ row.COD_PRODUTO }}">{{ row.COD_PRODUTO }}</td>
+                    <td><input type="hidden" name="descricao_produto" value="{{ row.DESCRICAO_PRODUTO }}">{{ row.DESCRICAO_PRODUTO }}</td>
+                    <td><input type="hidden" name="cod_cor" value="{{ row.COD_COR }}">{{ row.COD_COR }}</td>
+                    <td><input type="hidden" name="descricao_cor" value="{{ row.DESCRICAO_COR }}">{{ row.DESCRICAO_COR }}</td>
+                    <td><input type="hidden" name="tamanho" value="{{ row.TAMANHO }}">{{ row.TAMANHO }}</td>
+                    <td>{{ row.PTC }}</td>
+                    <td><input type="hidden" name="quantidade" value="{{ row.QUANTIDADE }}">{{ row.QUANTIDADE }}</td>
+                    <td><input type="hidden" name="preco" value="{{ row.PRECO }}">{{ row.PRECO }}</td>
+                    <td><input type="hidden" name="foto" value="{{ row.FOTO }}"><img src="{{ row.FOTO }}" alt="Foto do Produto" width="50"></td>
+                    <td><input type="text" name="estoque_atual"></td>
+                    <td><input type="text" name="reposicao"></td>
+                    <td><button type="button" class="btn detalhes-btn" data-produto="{{ row.COD_PRODUTO }}" data-cor="{{ row.COD_COR }}" data-tamanho="{{ row.TAMANHO }}">Detalhes</button></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="submit">Salvar</button>
+    </form>
+
+    <!-- Modal Romaneios -->
+    <div id="romaneiosModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeRomaneios">&times;</span>
+            <h2>Romaneios</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ROMANEIO</th>
+                        <th>DATA</th>
+                    </tr>
+                </thead>
+                <tbody id="romaneiosBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes -->
+    <div id="detalhesModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeDetalhes">&times;</span>
+            <h2>Detalhes do Produto</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>ROMANEIO</th>
+                        <th>DATA</th>
+                        <th>QUANTIDADE</th>
+                        <th>PRECO</th>
+                    </tr>
+                </thead>
+                <tbody id="detalhesBody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('verRomaneios').onclick = function() {
+            const codCliente = '{{ cod_cliente }}';
+            const dataInicial = '{{ data_inicial }}';
+            const dataFinal = '{{ data_final }}';
+
+            fetch('/romaneios', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: `cod_cliente=${codCliente}&data_inicial=${dataInicial}&data_final=${dataFinal}`
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Romaneios Response:", data);  // Adicione esta linha para depuração
+                const tbody = document.getElementById('romaneiosBody');
+                tbody.innerHTML = '';
+                data.forEach(romaneio => {
+                    const row = `<tr><td>${romaneio.romaneio}</td><td>${romaneio.data}</td></tr>`;
+                    tbody.insertAdjacentHTML('beforeend', row);
+                });
+                document.getElementById('romaneiosModal').style.display = 'block';
+            });
+        };
+
+        document.querySelectorAll('.detalhes-btn').forEach(button => {
+            button.onclick = function() {
+                const codCliente = '{{ cod_cliente }}';
+                const dataInicial = '{{ data_inicial }}';
+                const dataFinal = '{{ data_final }}';
+                const codProduto = this.getAttribute('data-produto');
+                const codCor = this.getAttribute('data-cor');
+                const tamanho = this.getAttribute('data-tamanho');
+
+                fetch('/detalhes_produto', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: `cod_cliente=${codCliente}&data_inicial=${dataInicial}&data_final=${dataFinal}&cod_produto=${codProduto}&cod_cor=${codCor}&tamanho=${tamanho}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Detalhes Response:", data);  // Adicione esta linha para depuração
+                    const tbody = document.getElementById('detalhesBody');
+                    tbody.innerHTML = '';
+                    data.forEach(detalhe => {
+                        const row = `<tr><td>${detalhe.romaneio}</td><td>${detalhe.data}</td><td>${detalhe.quantidade}</td><td>${detalhe.preco}</td></tr>`;
+                        tbody.insertAdjacentHTML('beforeend', row);
+                    });
+                    document.getElementById('detalhesModal').style.display = 'block';
+                });
+            };
+        });
+
+        document.getElementById('closeRomaneios').onclick = function() {
+            document.getElementById('romaneiosModal').style.display = 'none';
+        };
+
+        document.getElementById('closeDetalhes').onclick = function() {
+            document.getElementById('detalhesModal').style.display = 'none';
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+/* Estilos gerais */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+}
+
+.container {
+    margin: 20px auto;
+    max-width: 1200px;
+    padding: 20px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Títulos */
+h1, h2 {
+    color: #333;
+    margin-bottom: 20px;
+}
+
+h1 {
+    font-size: 24px;
+}
+
+h2 {
+    font-size: 20px;
+    font-weight: normal;
+    color: #555;
+}
+
+/* Filtros */
+.filtro {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.filtro label {
+    font-size: 16px;
+    color: #555;
+}
+
+.filtro input, .filtro select, .filtro button {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.filtro button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.filtro button:hover {
+    background-color: #0056b3;
+}
+
+/* Tabela de clientes */
+#clientes-table, #produtos-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+#clientes-table th, #clientes-table td,
+#produtos-table th, #produtos-table td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+#clientes-table th, #produtos-table th {
+    background-color: #007bff;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#clientes-table tr:hover, #produtos-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Destaque para linha selecionada */
+#clientes-table tr.selecionado, #produtos-table tr.selecionado {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    font-weight: bold;
+}
+
+#clientes-table tr.selecionado td, #produtos-table tr.selecionado td {
+    border: 1px solid #0f5132;
+}
+
+/* Mensagem de cliente selecionado */
+#cliente-selecionado {
+    margin-top: 20px;
+    padding: 10px;
+    border: 1px solid #0f5132;
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border-radius: 5px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Tabela de produtos */
+#produtos-table tr td img {
+    width: 100px; /* Ajusta a largura fixa das imagens */
+    height: auto;
+    border-radius: 5px;
+}
+
+/* Observação e botão de envio (agora no topo) */
+.observacao-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.observacao-container label {
+    font-size: 16px;
+    color: #555;
+}
+
+#observacao {
+    flex: 1;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+#enviar-mensagem {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#enviar-mensagem:hover {
+    background-color: #218838;
+}
+
+/* Spinner de carregamento */
+.spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+}
+
+.lds-dual-ring {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+}
+
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 46px;
+    height: 46px;
+    margin: 8px;
+    border-radius: 50%;
+    border: 6px solid #007bff;
+    border-color: #007bff transparent #007bff transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/* Observação e botão de envio (reposicionado no topo) */
+.observacao-container {
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    align-items: center;
+}
+
+.observacao-container label {
+    font-size: 16px;
+    color: #555;
+}
+
+#observacao {
+    flex: 1;
+    font-size: 14px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical;
+}
+
+#enviar-mensagem {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#enviar-mensagem:hover {
+    background-color: #218838;
+}
