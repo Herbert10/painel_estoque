@@ -3,10 +3,17 @@ import fdb
 import os
 from dotenv import load_dotenv
 
+
+os.environ["LD_LIBRARY_PATH"] = "/app/.heroku/python/lib"
+os.environ["FIREBIRD_HOME"] = "/app/.heroku/python"
+os.environ["FIREBIRD_LIB"] = "/app/.heroku/python/lib"
+
 # Carregar variáveis do .env
 load_dotenv()
 
 app = Flask(__name__)
+if os.getenv("HEROKU") == "true":
+    fdb.load_api("firebird_lib/libfbclient.so")
 
 # Conexão com banco Firebird
 def get_firebird_connection():
