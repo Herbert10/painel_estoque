@@ -1,0 +1,2 @@
+usuario@email.com,teste,azul,5
+usuario@email.com,teste 2,amareolo,1

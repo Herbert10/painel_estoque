@@ -6,32 +6,23 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-function formatarData(data) {
-    if (!data) return "N/A";
-    const date = new Date(data);
-    const dia = String(date.getDate()).padStart(2, "0");
-    const mes = String(date.getMonth() + 1).padStart(2, "0");
-    const ano = date.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-}
-
 function carregarProdutos() {
     fetch('/buscar-produtos')
         .then(response => response.json())
         .then(produtos => {
             const tabela = document.getElementById("produtos-table").querySelector("tbody");
             const clienteNome = document.getElementById("cliente-nome");
-            tabela.innerHTML = "";
+            tabela.innerHTML = ""; // Limpa a tabela antes de preencher
 
             if (produtos.length === 0) {
-                clienteNome.textContent = "Cliente: Nenhum produto encontrado.";
+                clienteNome.textContent = "Nenhum cliente selecionado ou produtos não encontrados.";
                 const tr = document.createElement('tr');
                 tr.innerHTML = '<td colspan="9" style="text-align: center; color: red;">Nenhum produto encontrado.</td>';
                 tabela.appendChild(tr);
                 return;
             }
 
-            clienteNome.textContent = `Cliente: ${produtos[0].cliente_nome}`;
+            clienteNome.textContent = `Cliente: ${produtos[0].cliente_nome || 'Desconhecido'}`;
 
             produtos.forEach(produto => {
                 const tr = document.createElement("tr");
@@ -42,8 +33,8 @@ function carregarProdutos() {
                     <td>${produto.qtd_comprada}</td>
                     <td>${produto.total_vendido}</td>
                     <td>${produto.estoque_sp}</td>
-                    <td>${formatarData(produto.data_primeira_compra)}</td>
-                    <td>${formatarData(produto.data_ultima_compra)}</td>
+                    <td>${produto.data_primeira_compra}</td>
+                    <td>${produto.data_ultima_compra}</td>
                     <td><input type="checkbox" class="selecionar-produto" data-produto="${produto.produto_nome}"></td>
                 `;
                 tabela.appendChild(tr);
@@ -53,12 +44,30 @@ function carregarProdutos() {
 }
 
 function enviarMensagem() {
-    // Placeholder para a funcionalidade de enviar mensagem
-    const observacao = document.getElementById('observacao').value;
-    const produtosSelecionados = Array.from(document.querySelectorAll('.selecionar-produto:checked'))
-                                    .map(checkbox => checkbox.dataset.produto);
+    const observacao = document.getElementById("observacao").value;
+    const checkboxes = document.querySelectorAll(".selecionar-produto:checked");
+    const produtosSelecionados = Array.from(checkboxes).map(cb => cb.dataset.produto);
 
-    console.log("Observação:", observacao);
-    console.log("Produtos Selecionados:", produtosSelecionados);
-    // Aqui você implementaria a lógica para enviar a mensagem e os produtos selecionados para o servidor.
+    if (produtosSelecionados.length === 0) {
+        alert("Selecione pelo menos um produto para enviar.");
+        return;
+    }
+
+    const data = {
+        observacao: observacao,
+        produtos: produtosSelecionados
+    };
+
+    fetch('/enviar-mensagem', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message) {
+                alert(data.message);
+            }
+        })
+        .catch(error => console.error("Erro ao enviar mensagem:", error));
 }

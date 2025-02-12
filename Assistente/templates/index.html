@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistente de Banco de Dados</title>
+</head>
+<body>
+    <h1>Assistente de Banco de Dados</h1>
+    <form id="pergunta-form">
+        <label for="pergunta_id">Selecione uma pergunta pré-definida:</label><br>
+        <select id="pergunta_id" name="pergunta_id">
+            <option value="">-- Pergunta Personalizada --</option>
+            {% for id, pergunta in perguntas.items() %}
+                <option value="{{ id }}">{{ pergunta }}</option>
+            {% endfor %}
+        </select><br><br>
+
+        <label for="pergunta">Ou digite sua própria pergunta:</label><br>
+        <textarea id="pergunta" name="pergunta" rows="4" cols="50"></textarea><br><br>
+
+        <button type="submit">Enviar</button>
+    </form>
+    <div id="resposta"></div>
+
+    <script>
+        document.getElementById("pergunta-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+
+            const response = await fetch("/responder", {
+                method: "POST",
+                body: formData
+            });
+
+            const data = await response.json();
+            const respostaDiv = document.getElementById("resposta");
+            if (data.resposta) {
+                respostaDiv.textContent = JSON.stringify(data.resposta, null, 2);
+            } else {
+                respostaDiv.textContent = data.erro || "Erro desconhecido.";
+            }
+        });
+    </script>
+</body>
+</html>

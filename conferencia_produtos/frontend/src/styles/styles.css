@@ -1,0 +1,119 @@
+/* Reset básico */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Estilização da página */
+body {
+    background-color: #f4f4f4;
+    color: #333;
+    text-align: center;
+}
+
+/* Cabeçalho */
+h1 {
+    background-color: #007bff;
+    color: white;
+    padding: 10px;
+}
+
+/* Lista de pedidos */
+.pedido-lista {
+    list-style: none;
+    padding: 10px;
+}
+
+.pedido-item {
+    background: white;
+    padding: 15px;
+    margin: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+
+.pedido-item:hover {
+    background-color: #f0f0f0;
+}
+
+/* Botão de conferência */
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218838;
+}
+/* Container da conferência */
+.conferencia-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: auto;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Botões */
+button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.voltar-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.confirmar-btn {
+    background: #007bff;
+    color: white;
+}
+
+.finalizar-btn {
+    background: #28a745;
+    color: white;
+}
+
+/* Input para código de barras */
+.input-barras {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Listas de produtos */
+.produto-lista {
+    list-style: none;
+    padding: 0;
+}
+
+.produto-item {
+    background: #f8f9fa;
+    padding: 10px;
+    margin: 5px 0;
+    border-radius: 5px;
+    box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.1);
+}
+
+.produto-item.conferido {
+    background: #d4edda;
+    border-left: 5px solid #28a745;
+}
+

@@ -1,0 +1,2 @@
+admin@email.com,123456,admin
+usuario@email.com,senha123,usuario

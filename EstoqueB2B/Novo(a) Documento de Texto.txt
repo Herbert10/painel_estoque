@@ -1,0 +1,11 @@
+# Configurações do Banco de Dados Firebird
+FIREBIRD_DSN=milleniumflexmetal.ddns.net:c:/SYS/base/millennium
+FIREBIRD_USER=SYSDBA
+FIREBIRD_PASSWORD=masterkey
+
+# Configurações do Magento 2
+MAGENTO_BASE_URL=https://megatoon.org/
+MAGENTO_CONSUMER_KEY=weup4t3lk3i9084nbcx5sgem3d31bvqi
+MAGENTO_CONSUMER_SECRET=2tgot2ylzlgcwrteq5dw89iq58qk8wql
+MAGENTO_TOKEN_KEY=xg8rccrdyjl7j4oidza6byjj5x6hbukk
+MAGENTO_TOKEN_SECRET=acsret8ahnvw0shikgfkv8k3mny2eur1

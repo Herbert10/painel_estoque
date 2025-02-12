@@ -1,20 +1,16 @@
 document.addEventListener("DOMContentLoaded", function () {
     carregarVendedores();
     configurarEventos();
-    buscarClientes(); // Carrega os clientes inicialmente
-
-    // Adicione um console.log para verificar se o evento DOMContentLoaded está sendo disparado
-    console.log("DOMContentLoaded disparado!"); 
 });
 
 let clientes = [];
 let ordemAtual = {};
 
+// Função para carregar os vendedores no dropdown
 function carregarVendedores() {
     fetch('/buscar-vendedores')
         .then(response => response.json())
         .then(vendedores => {
-            console.log("Vendedores recebidos:", vendedores); // Verifica os vendedores recebidos
             const selectVendedor = document.getElementById("vendedor");
             vendedores.forEach(vendedor => {
                 const option = document.createElement("option");
@@ -26,10 +22,16 @@ function carregarVendedores() {
         .catch(error => console.error("Erro ao carregar vendedores:", error));
 }
 
+// Configura os eventos de clique e busca
 function configurarEventos() {
-    document.getElementById("buscar-clientes").addEventListener("click", buscarClientes);
+    const botaoBuscar = document.getElementById("buscar-clientes");
+    const colunasOrdenaveis = document.querySelectorAll("#clientes-table th[data-column]");
 
-    document.querySelectorAll("#clientes-table th[data-column]").forEach(th => {
+    // Evento para buscar clientes
+    botaoBuscar.addEventListener("click", buscarClientes);
+
+    // Evento para ordenar colunas
+    colunasOrdenaveis.forEach(th => {
         th.addEventListener("click", function () {
             const coluna = this.dataset.column;
             const ordem = ordemAtual[coluna] === "asc" ? "desc" : "asc";
@@ -38,24 +40,18 @@ function configurarEventos() {
     });
 }
 
+// Função para buscar clientes
 function buscarClientes() {
     const codigo = document.getElementById("codigo").value.trim();
     const nome = document.getElementById("nome").value.trim();
-    const vendedor = document.getElementById("vendedor").value; // Corrigido: removido .trim()
-    const vendedorCodificado = encodeURIComponent(vendedor);
-
+    const vendedor = document.getElementById("vendedor").value.trim();
 
     exibirSpinner(true);
 
-    console.log("Valores antes do fetch:", { codigo, nome, vendedor }); // Log dos valores antes do fetch
-
-    fetch(`/buscar-cliente?codigo=${codigo}&nome=${nome}&vendedor=${vendedorCodificado}`)
-        .then(response => {
-            console.log("Resposta do servidor:", response); // Log da resposta do servidor
-            return response.json();
-        })
+    fetch(`/buscar-cliente?codigo=${codigo}&nome=${nome}&vendedor=${vendedor}`)
+        .then(response => response.json())
         .then(dados => {
-            console.log("Dados recebidos:", dados);
+            console.log("Clientes recebidos:", dados);
             clientes = dados;
             atualizarTabela(clientes);
         })
@@ -63,19 +59,10 @@ function buscarClientes() {
         .finally(() => exibirSpinner(false));
 }
 
-function formatarData(data) {
-    if (!data) return "N/A";
-    const date = new Date(data);
-    const dia = String(date.getDate()).padStart(2, "0");
-    const mes = String(date.getMonth() + 1).padStart(2, "0");
-    const ano = date.getFullYear();
-    return `${dia}/${mes}/${ano}`;
-}
-
-
+// Atualiza a tabela de clientes
 function atualizarTabela(clientes) {
     const tabela = document.getElementById("clientes-table").querySelector("tbody");
-    tabela.innerHTML = "";
+    tabela.innerHTML = ""; // Limpa a tabela antes de preenchê-la
 
     if (clientes.length === 0) {
         tabela.innerHTML = '<tr><td colspan="6" style="text-align: center; color: red;">Nenhum cliente encontrado.</td></tr>';
@@ -83,39 +70,38 @@ function atualizarTabela(clientes) {
     }
 
     clientes.forEach(cliente => {
-        console.log("Cliente:", cliente);
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${cliente.codigo || "N/A"}</td>
-            <td>${cliente.nome || "N/A"}</td>
-            <td>${cliente.classificacao || "N/A"}</td>
-            <td>${formatarData(cliente.ultima_compra)}</td>
+            <td>${cliente.cod_cliente || "N/A"}</td>
+            <td>${cliente.nome_cliente || "N/A"}</td>
+            <td>${cliente.classificacao_cliente || "N/A"}</td>
+            <td>${cliente.ultima_compra || "N/A"}</td>
             <td>${cliente.qtd_produtos || 0}</td>
-            <td><button onclick="exibirClienteSelecionado(${cliente.id})">Selecionar</button></td>
+            <td><button onclick="exibirClienteSelecionado(${cliente.cod_cliente})">Selecionar</button></td>
         `;
         tabela.appendChild(tr);
     });
-
-    console.log("HTML da tabela:", document.getElementById("clientes-table").innerHTML);
 }
 
-
+// Função para ordenar clientes
 function ordenarClientes(coluna, ordem) {
     ordemAtual[coluna] = ordem;
     const comparador = (a, b) => {
         const valorA = a[coluna] || "";
         const valorB = b[coluna] || "";
-        if (ordem === "asc") return valorA > valorB ? 1 : -1;
-        return valorA < valorB ? 1 : -1;
+        return ordem === "asc" ? valorA.localeCompare(valorB) : valorB.localeCompare(valorA);
     };
     const clientesOrdenados = [...clientes].sort(comparador);
     atualizarTabela(clientesOrdenados);
 }
 
+// Redireciona para a tela de produtos do cliente selecionado
 function exibirClienteSelecionado(clienteId) {
+    console.log(`Cliente Selecionado: ${clienteId}`);
     window.location.href = `/produtos/${clienteId}`;
 }
 
+// Exibe ou oculta o spinner de carregamento
 function exibirSpinner(ativo) {
     const spinner = document.querySelector(".spinner");
     spinner.style.display = ativo ? "flex" : "none";

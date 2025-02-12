@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/clientes.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Lista de Clientes</h1>
+
+        <!-- Filtros -->
+        <div class="filtro">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" placeholder="Digite o código">
+
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite o nome">
+
+            <label for="vendedor-selecao">Vendedor:</label>
+            <select id="vendedor-selecao">
+                <option value="">Selecione um vendedor</option>
+            </select>
+
+            <button id="buscar-cliente">Buscar</button>
+        </div>
+
+        <!-- Tabela de clientes -->
+        <table id="clientes-table">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Nome</th>
+                    <th>Classificação</th>
+                    <th>Última Compra</th>
+                    <th>Qtd Produtos</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados serão preenchidos dinamicamente -->
+            </tbody>
+        </table>
+
+        <!-- Mensagem de cliente selecionado -->
+        <div id="cliente-selecionado" style="margin-top: 20px; font-size: 18px; font-weight: bold; color: green;">
+            Cliente Selecionado: Nenhum
+        </div>
+
+        <!-- Spinner de carregamento -->
+        <div class="spinner" id="loading-spinner" style="display: none;">
+            <div class="lds-dual-ring"></div>
+        </div>
+    </div>
+</body>
+</html>

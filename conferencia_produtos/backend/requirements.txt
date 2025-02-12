@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+firebirdsql
+psycopg2
+python-dotenv
+redis

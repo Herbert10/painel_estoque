@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes com Títulos Vencidos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+        th {
+            background: #007BFF;
+            color: #fff;
+        }
+        tr:hover {
+            background: #f1f1f1;
+        }
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+        .btn:hover {
+            background: #218838;
+        }
+        .btn-select {
+            background: #ff9800;
+        }
+        .btn-select:hover {
+            background: #e68900;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>📋 Clientes com Títulos Vencidos (Últimos 5 a 10 dias)</h2>
+
+        <button class="btn btn-select" onclick="toggleSelecionarTodos()">✅ Selecionar / ❌ Desmarcar Todos</button>
+
+        <table id="tabelaClientes">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="selectAll"></th>
+                    <th>Nome</th>
+                    <th>Título</th>
+                    <th>Valor</th>
+                    <th>Data de Vencimento</th>
+                    <th>Telefone</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados serão carregados aqui via JavaScript -->
+            </tbody>
+        </table>
+
+        <button class="btn" onclick="enviarWhatsApp()">📤 Enviar WhatsApp</button>
+
+	<button class="btn btn-email" onclick="enviarEmail()">📧 Enviar por E-mail</button>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            console.log("🔍 Carregando clientes...");
+
+            fetch("/clientes_vencidos")
+            .then(response => response.json())
+            .then(data => {
+                console.log("📌 Dados recebidos da API:", data);
+                const tabela = document.querySelector("#tabelaClientes tbody");
+                tabela.innerHTML = ""; 
+
+                if (data.length === 0) {
+                    tabela.innerHTML = "<tr><td colspan='6'>Nenhum cliente com título vencido.</td></tr>";
+                    return;
+                }
+
+                data.forEach(cliente => {
+                    let valorFormatado = isNaN(cliente.valor) ? "Erro" : `R$ ${parseFloat(cliente.valor).toFixed(2)}`;
+
+                    const row = `<tr>
+                        <td><input type="checkbox" class="cliente-checkbox" value='${JSON.stringify(cliente)}'></td>
+                        <td>${cliente.nome_cliente}</td>
+                        <td>${cliente.n_documento}</td>
+                        <td>${valorFormatado}</td>
+                        <td>${cliente.data_vencimento}</td>
+                        <td>${cliente.telefone}</td>
+                    </tr>`;
+                    tabela.innerHTML += row;
+                });
+
+                // Ativar a função para selecionar/desmarcar todos
+                document.getElementById("selectAll").addEventListener("change", function() {
+                    const checkboxes = document.querySelectorAll(".cliente-checkbox");
+                    checkboxes.forEach(checkbox => checkbox.checked = this.checked);
+                });
+            })
+            .catch(error => {
+                console.error("⚠️ Erro ao carregar clientes:", error);
+                alert("Erro ao buscar dados da API.");
+            });
+        });
+
+        function toggleSelecionarTodos() {
+            const checkboxes = document.querySelectorAll(".cliente-checkbox");
+            const selectAllCheckbox = document.getElementById("selectAll");
+            const marcar = !selectAllCheckbox.checked;
+            checkboxes.forEach(checkbox => checkbox.checked = marcar);
+            selectAllCheckbox.checked = marcar;
+        }
+
+        function enviarWhatsApp() {
+            let selecionados = [];
+            document.querySelectorAll(".cliente-checkbox:checked").forEach(checkbox => {
+                selecionados.push(JSON.parse(checkbox.value));
+            });
+
+            if (selecionados.length === 0) {
+                alert("Selecione pelo menos um cliente.");
+                return;
+            }
+
+            fetch("/enviar_mensagem", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ clientes: selecionados })
+            })
+            .then(() => alert("📤 Mensagens enviadas!"));
+        }
+
+function enviarEmail() {
+    let selecionados = [];
+    document.querySelectorAll(".cliente-checkbox:checked").forEach(checkbox => {
+        selecionados.push(JSON.parse(checkbox.value));
+    });
+
+    if (selecionados.length === 0) {
+        alert("Selecione pelo menos um cliente.");
+        return;
+    }
+
+    fetch("/enviar_email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clientes: selecionados })
+    })
+    .then(response => response.json())
+    .then(data => alert("📧 E-mail enviado com sucesso!"))
+    .catch(error => {
+        console.error("⚠️ Erro ao enviar e-mail:", error);
+        alert("Erro ao enviar e-mail.");
+    });
+}
+
+    </script>
+
+</body>
+</html>

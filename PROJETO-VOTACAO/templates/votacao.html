@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>Votação de Produtos</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <h2>Votação de Produtos</h2>
+    {% for produto in produtos %}
+        <div class="produto">
+            <img src="{{ produto['imagem'] }}" alt="{{ produto['nome'] }}">
+            <p>{{ produto['nome'] }} - {{ produto['cor'] }} - {{ produto['tamanho'] }}</p>
+            <form method="POST">
+                <input type="hidden" name="produto" value="{{ produto['nome'] }}">
+                <input type="hidden" name="cor" value="{{ produto['cor'] }}">
+                <label>Nota:</label>
+                <select name="nota">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+                <button type="submit">Votar</button>
+            </form>
+        </div>
+    {% endfor %}
+</body>
+</html>

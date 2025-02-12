@@ -1,22 +1,19 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Produtos Recomendados</title>
+    <title>Produtos</title>
     <link rel="stylesheet" href="/static/css/style.css">
-    <script src="/static/js/produtos.js" defer></script>
 </head>
 <body>
     <div class="container">
-        <h2 id="cliente-nome">Cliente: </h2>
-
-        <div class="observacao-container">
-            <label for="observacao">Observação:</label>
-            <textarea id="observacao" rows="4" placeholder="Adicione uma observação..."></textarea>
-            <button id="enviar-mensagem">Enviar Mensagem</button>
+        <h1>Produtos do Cliente: {{ cliente_nome }}</h1>
+        <div class="observacao">
+            <textarea id="observacao" placeholder="Adicione uma observação..."></textarea>
+            <button id="enviar-mensagem" onclick="enviarMensagem()">Enviar Mensagem</button>
         </div>
-
+        <div class="mensagem">{{ mensagem }}</div>
         <table id="produtos-table">
             <thead>
                 <tr>
@@ -32,8 +29,22 @@
                 </tr>
             </thead>
             <tbody>
+                {% for produto in produtos %}
+                <tr>
+                    <td>{{ produto.rank_recomendacao }}</td>
+                    <td>{{ produto.produto_nome }}</td>
+                    <td><img src="{{ produto.foto_produto }}" alt="Imagem do Produto"></td>
+                    <td>{{ produto.qtd_comprada }}</td>
+                    <td>{{ produto.total_vendido }}</td>
+                    <td>{{ produto.estoque_sp }}</td>
+                    <td>{{ produto.data_primeira_compra }}</td>
+                    <td>{{ produto.data_ultima_compra }}</td>
+                    <td><input type="checkbox" class="selecionar-produto"></td>
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
+    <script src="/static/js/produtos.js"></script>
 </body>
 </html>

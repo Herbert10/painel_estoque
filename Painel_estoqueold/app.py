@@ -1,169 +1,122 @@
-from flask import Flask, render_template, jsonify
-import fdb
+from PIL import Image, ImageDraw, ImageFont
+from tkinter import Tk, filedialog, messagebox
 import os
-import requests
-import threading
-import time
-from datetime import datetime, timedelta
-from dotenv import load_dotenv
 
-# Carregar variáveis do .env
-load_dotenv()
 
-app = Flask(__name__)
-
-# Conexão com banco Firebird
-def get_firebird_connection():
-    return fdb.connect(
-        host=os.getenv("FIREBIRD_HOST"),
-        port=int(os.getenv("FIREBIRD_PORT")),
-        database=os.getenv("FIREBIRD_DATABASE"),
-        user=os.getenv("FIREBIRD_USER"),
-        password=os.getenv("FIREBIRD_PASSWORD"),
-    )
-
-# Consulta ao banco
-def fetch_data():
-    conn = get_firebird_connection()
-    cursor = conn.cursor()
-
-    query = """
-        SELECT PV.STATUS_WORKFLOW, COUNT(PV.PEDIDOV) AS QUANTIDADE
-        FROM PEDIDO_VENDA PV
-        WHERE PV.EFETUADO = 'F'
-        GROUP BY PV.STATUS_WORKFLOW;
+def ajustar_foto_para_caixa(foto, caixa_largura, caixa_altura):
     """
-    cursor.execute(query)
-    result = cursor.fetchall()
-    conn.close()
-    return {str(row[0]): row[1] for row in result}
+    Ajusta a foto para caber proporcionalmente na caixa definida.
+    """
+    largura_foto, altura_foto = foto.size
 
-# Função para enviar mensagem via WhatsApp usando Z-API
-def enviar_mensagem_whatsapp(mensagem):
-    url = "https://api.z-api.io/instances/3D0410602BEFB06E5DF6EEE17BD0D626/token/CC6CF6CE09DC42573B89209B/send-text"
-    client_token = "F431d58e253c34be3844b4bc62bb831e6S"  # Substitua pelo Client-Token fornecido
+    # Calcular a proporção da imagem
+    proporcao_largura = caixa_largura / largura_foto
+    proporcao_altura = caixa_altura / altura_foto
+    proporcao = min(proporcao_largura, proporcao_altura)
 
-    headers = {
-        "Content-Type": "application/json",
-        "Client-Token": client_token
-    }
+    # Redimensionar a foto mantendo a proporção
+    nova_largura = int(largura_foto * proporcao)
+    nova_altura = int(altura_foto * proporcao)
+    foto_redimensionada = foto.resize((nova_largura, nova_altura), Image.Resampling.LANCZOS)
 
-    payload = {
-        "phone": "5511941445959",  # Substitua pelo número correto
-        "message": mensagem
-    }
+    return foto_redimensionada
 
-    try:
-        response = requests.post(url, json=payload, headers=headers)
-        if response.status_code == 200:
-            print("Mensagem enviada com sucesso!")
-        else:
-            print(f"Erro ao enviar mensagem: {response.text}")
-    except Exception as e:
-        print(f"Erro na integração com Z-API: {e}")
 
-# Controle de estado crítico já processado
-estado_critico_cache = {}
+def criar_catalogo_com_template(template_path, fotos_selecionadas, output_path):
+    """
+    Cria um catálogo utilizando um template PNG como base, com fotos ajustadas proporcionalmente
+    às caixas do template.
+    """
+    paginas = []
+    template = Image.open(template_path).convert("RGBA")
 
-# Verificação de estado crítico e envio de alertas em thread
-def verificar_estado_critico_async(grouped_cards):
-    def verificar_e_enviar():
-        critical_states = [
-            {
-                "labels": ["Aguardando impressão prioritário", "Aguardando impressão"],
-                "alert_message": "\u26A0 Atenção: Rotina de impressão em estado crítico com {total} pedidos aguardando impressão. \u26A0"
-            },
-            {
-                "labels": ["Aguardando conferência prioritário", "Aguardando conferência"],
-                "alert_message": "\u26A0 Atenção: Rotina de conferência em estado crítico com {total} pedidos aguardando conferência. \u26A0"
-            },
-            {
-                "labels": ["Aguardando atribuição de separador prioritário", "Aguardando atribuição de separador"],
-                "alert_message": "\u26A0 Atenção: Rotina de atribuição de separador em estado crítico com {total} pedidos aguardando separação. \u26A0"
-            }
-        ]
+    # Fonte para o texto (opcional: personalize com um arquivo .ttf)
+    font = ImageFont.load_default()
 
-        for state in critical_states:
-            # Calcular o total para o estado crítico
-            total = sum(
-                next((card["value"] for group, cards in grouped_cards.items() for card in cards if card["label"] == label), 0)
-                for label in state["labels"]
-            )
+    # Tamanho do template
+    largura_template, altura_template = template.size
 
-            # Verificar se já foi processado recentemente
-            cache_key = "-".join(state["labels"])
-            last_processed = estado_critico_cache.get(cache_key, {"last_sent": None, "last_total": 0})
+    # Definir posições exatas para fotos e textos
+    posicoes = [
+        {"x": 100, "y": 100, "width": 200, "height": 200},  # Espaço 1
+        {"x": 400, "y": 100, "width": 200, "height": 200},  # Espaço 2
+        {"x": 100, "y": 400, "width": 200, "height": 200},  # Espaço 3
+        {"x": 400, "y": 400, "width": 200, "height": 200},  # Espaço 4
+    ]
 
-            # Se já enviado recentemente (menos de 5 minutos atrás) e o total não mudou, não reenvie
-            if last_processed["last_sent"] and datetime.now() - last_processed["last_sent"] < timedelta(minutes=5):
-                if last_processed["last_total"] == total:
-                    continue
+    # Adicionar produtos ao template
+    for i, foto_path in enumerate(fotos_selecionadas):
+        if i % len(posicoes) == 0:
+            if i > 0:
+                paginas.append(template.copy())  # Salva a página atual
+            template = Image.open(template_path).convert("RGBA")  # Reinicia o template
 
-            # Atualizar cache e enviar mensagem
-            estado_critico_cache[cache_key] = {"last_sent": datetime.now(), "last_total": total}
-            if total > 10:
-                mensagem = state["alert_message"].format(total=total)
-                enviar_mensagem_whatsapp(mensagem)
+        # Abrir a foto com fundo transparente
+        foto = Image.open(foto_path).convert("RGBA")
 
-                # Aguardar 2 minutos e verificar novamente
-                time.sleep(120)
-                updated_total = sum(
-                    next((card["value"] for group, cards in grouped_cards.items() for card in cards if card["label"] == label), 0)
-                    for label in state["labels"]
-                )
-                if updated_total > 10:
-                    estado_critico_cache[cache_key] = {"last_sent": datetime.now(), "last_total": updated_total}
-                    enviar_mensagem_whatsapp(mensagem)
+        # Redimensionar a foto para caber na caixa
+        caixa = posicoes[i % len(posicoes)]
+        foto_ajustada = ajustar_foto_para_caixa(foto, caixa["width"], caixa["height"])
 
-    # Iniciar a verificação em um thread separado
-    thread = threading.Thread(target=verificar_e_enviar)
-    thread.start()
+        # Calcular a posição centralizada da foto dentro da caixa
+        x_centralizado = caixa["x"] + (caixa["width"] - foto_ajustada.size[0]) // 2
+        y_centralizado = caixa["y"] + (caixa["height"] - foto_ajustada.size[1]) // 2
 
-@app.route("/")
-def index():
-    db_data = fetch_data()
+        # Colar a foto no template
+        template.paste(foto_ajustada, (x_centralizado, y_centralizado), mask=foto_ajustada)
 
-    # Cards
-    grouped_cards = {
-        "Personalizado": [
-            {"label": "Aguardando impressão personalizado", "status": "47", "filial": "2", "tipo_pedido": "13"}
-        ],
-        "Fluxo de Pedidos": [
-            {"label": "Aguardando impressão prioritário", "status": "47", "filial": "2"},
-            {"label": "Aguardando impressão", "status": "45", "filial": "2"},
-            {"label": "Aguardando atribuição de separador prioritário", "status": "148", "filial": "2"},
-            {"label": "Aguardando atribuição de separador", "status": "149", "filial": "2"},
-            {"label": "Aguardando separação prioritário", "status": "30", "filial": "2"},
-            {"label": "Aguardando separação", "status": "4", "filial": "2"},
-            {"label": "Aguardando conferência prioritário", "status": "32", "filial": "2"},
-            {"label": "Aguardando conferência", "status": "6", "filial": "2"},
-        ],
-        "Enviar para Zanzibar": [
-            {"label": "Aguardando impressão agrupamento prioritário", "status": "156", "filial": "14"},
-            {"label": "Aguardando impressão agrupamento", "status": "153", "filial": "14"},
-            {"label": "Aguardando separação agrupamento prioritário", "status": "155", "filial": "14"},
-            {"label": "Aguardando separação agrupamento", "status": "152", "filial": "14"},
-        ],
-        "Aguardando chegar da Zanzibar": [
-            {"label": "Aguardando retorno agrupamento prioritário", "status": "157", "filial": "2"},
-            {"label": "Aguardando retorno agrupamento", "status": "146", "filial": "2"},
-        ],
-    }
+        # Inserir o nome do produto
+        draw = ImageDraw.Draw(template)
+        nome_produto = os.path.basename(foto_path).split('.')[0]
+        draw.text((caixa["x"], caixa["y"] + caixa["height"] + 10), nome_produto, fill="black", font=font)
 
-    # Atribuir valores pelos dados do banco
-    for group, cards in grouped_cards.items():
-        for card in cards:
-            card["value"] = db_data.get(card["status"], 0)
+    # Adiciona a última página
+    paginas.append(template)
 
-    # Verificar estados críticos e enviar alertas de forma assíncrona
-    verificar_estado_critico_async(grouped_cards)
+    # Salvar em PDF
+    paginas[0].save(
+        output_path, save_all=True, append_images=paginas[1:], resolution=100
+    )
+    messagebox.showinfo("Sucesso", f"Catálogo gerado em: {output_path}")
 
-    return render_template("index.html", grouped_cards=grouped_cards)
 
-@app.route("/api/data")
-def get_data():
-    db_data = fetch_data()
-    return jsonify(db_data)
+# Interface gráfica para seleção de arquivos
+def selecionar_template_e_fotos():
+    root = Tk()
+    root.withdraw()
 
+    # Selecionar o template
+    template_path = filedialog.askopenfilename(
+        title="Selecione o template em PNG",
+        filetypes=[("Imagens PNG", "*.png")]
+    )
+    if not template_path:
+        messagebox.showwarning("Atenção", "Nenhum template foi selecionado.")
+        return
+
+    # Selecionar as fotos
+    fotos_selecionadas = filedialog.askopenfilenames(
+        title="Selecione as fotos dos produtos",
+        filetypes=[("Imagens", "*.png *.jpg *.jpeg")]
+    )
+    if not fotos_selecionadas:
+        messagebox.showwarning("Atenção", "Nenhuma foto foi selecionada.")
+        return
+
+    # Escolher onde salvar o PDF
+    output_path = filedialog.asksaveasfilename(
+        title="Salvar catálogo como",
+        defaultextension=".pdf",
+        filetypes=[("PDF", "*.pdf")]
+    )
+    if not output_path:
+        messagebox.showwarning("Atenção", "Nenhum local de salvamento foi escolhido.")
+        return
+
+    # Criar o catálogo
+    criar_catalogo_com_template(template_path, fotos_selecionadas, output_path)
+
+
+# Executar o programa
 if __name__ == "__main__":
-    app.run(debug=True)
+    selecionar_template_e_fotos()

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clientes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Buscar Clientes</h1>
+        <div class="filtro">
+            <input type="text" id="codigo" placeholder="Código do Cliente">
+            <input type="text" id="nome" placeholder="Nome do Cliente">
+            <select id="vendedor">
+                <option value="">Selecione um Vendedor</option>
+            </select>
+            <button id="buscar-clientes">Buscar</button>
+        </div>
+        <div class="spinner" style="display: none;">Carregando...</div>
+        <table id="clientes-table">
+            <thead>
+                <tr>
+                    <th data-column="cod_cliente">Código</th>
+                    <th data-column="nome_cliente">Nome</th>
+                    <th data-column="classificacao_cliente">Classificação</th>
+                    <th data-column="ultima_compra">Última Compra</th>
+                    <th data-column="qtd_produtos">Qtd Produtos</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados serão preenchidos dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+    <script src="/static/js/clientes.js"></script>
+</body>
+</html>

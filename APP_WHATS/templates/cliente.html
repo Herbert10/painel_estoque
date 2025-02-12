@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Clientes</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <script src="/static/js/clientes.js" defer></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Busca de Clientes</h1>
+
+        <!-- Filtros de Busca -->
+        <div class="filtro">
+            <label for="codigo">Código:</label>
+            <input type="text" id="codigo" placeholder="Digite o código do cliente">
+
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" placeholder="Digite o nome do cliente">
+
+            <label for="vendedor">Vendedor:</label>
+            <select id="vendedor">
+                <option value="">Todos</option>
+            </select>
+
+            <button id="buscar-clientes">Buscar</button>
+        </div>
+
+        <!-- Tabela de Clientes -->
+        <table id="clientes-table">
+            <thead>
+                <tr>
+                    <th data-column="codigo">Código</th>
+                    <th data-column="nome">Nome</th>
+                    <th data-column="classificacao">Classificação</th>
+                    <th data-column="ultima_compra">Última Compra</th>
+                    <th data-column="qtd_produtos">Qtd Produtos</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Os dados serão carregados dinamicamente -->
+            </tbody>
+        </table>
+
+        <div class="spinner" style="display: none;">
+            <div class="lds-dual-ring"></div>
+        </div>
+    </div>
+</body>
+</html>

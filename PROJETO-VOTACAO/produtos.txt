@@ -1,0 +1,2 @@
+teste,azul,20,static/uploads\AlfaDash_Logo  1.png
+teste 2,amareolo,15,static/uploads\Assinatura Alfa Dash.jpg
