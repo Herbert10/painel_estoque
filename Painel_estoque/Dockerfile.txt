@@ -1,0 +1,17 @@
+# Usa uma imagem oficial do Python compatível
+FROM python:3.10
+
+# Define o diretório de trabalho
+WORKDIR /app
+
+# Copia os arquivos do seu projeto para o contêiner
+COPY . .
+
+# Instala as dependências
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expor a porta que o Railway usará
+EXPOSE 8000
+
+# Comando para rodar a aplicação (ajuste se necessário)
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
