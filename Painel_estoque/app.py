@@ -3,15 +3,6 @@ import fdb
 import os
 from dotenv import load_dotenv
 
-
-os.environ["LD_LIBRARY_PATH"] = "/app/.heroku/python/lib"
-os.environ["FIREBIRD_HOME"] = "/app/.heroku/python"
-os.environ["FIREBIRD_LIB"] = "/app/.heroku/python/lib"
-fdb.load_api("/usr/lib/x86_64-linux-gnu/libfbclient.so")
-
-firebird_lib_path = os.path.join(os.path.dirname(__file__), "libs", "libfbclient.so")
-fdb.load_api(firebird_lib_path)
-
 # Carregar variáveis do .env
 load_dotenv()
 
